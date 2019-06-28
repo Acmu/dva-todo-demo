@@ -18,9 +18,9 @@ function IndexPage(props) {
           </a>
         </li>
         <li>
-          <a href='javascript:;' onClick={() => history.push('/todo')}>
-            go to todo list :)
-          </a>
+          <button onClick={() => history.push('/todo')}>
+            Go to todo list :)
+          </button>
         </li>
       </ul>
     </div>
