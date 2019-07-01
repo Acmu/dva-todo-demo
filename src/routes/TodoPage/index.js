@@ -4,53 +4,64 @@ import { connect } from 'dva';
 import TodoList from '../../components/TodoList';
 
 class TodoPage extends Component {
-  state = {
-    inputValue: 'list item'
-  };
-
-  addItem = () => {
-    const { inputValue } = this.state;
+  addItem = inputValue => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'todo/add',
+      type: 'todo/setTodoList',
       inputValue
     });
   };
 
-  addItemAsync = () => {
-    const { inputValue } = this.state;
+  searchItem = searchValue => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'todo/addEffect',
-      inputValue
+      type: 'todo/setSearch',
+      searchValue
     });
   };
 
-  handleDelete = index => {
+  // addItemAsync = () => {
+  //   const { inputValue } = this.state;
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'todo/addEffect',
+  //     inputValue
+  //   });
+  // };
+
+  toggleMarked = uuid => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'todo/delete',
-      index
+      type: 'todo/setToggleMarked',
+      uuid
     });
   };
 
-  handleInputChange(inputValue) {
-    this.setState(() => ({
-      inputValue
-    }));
-  }
+  setNoneSearched = searchVal => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'todo/setNoneSearched',
+      searchVal
+    });
+  };
+
+  setAllSearchedTrue = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'todo/setAllSearchedTrue'
+    });
+  };
 
   render() {
-    const { inputValue } = this.state;
     const {
       todo: { todoList }
     } = this.props;
     return (
       <TodoList
-        inputValue={inputValue}
+        setNoneSearched={this.setNoneSearched}
+        setAllSearchedTrue={this.setAllSearchedTrue}
         todoList={todoList}
-        handleInputChange={this.handleInputChange}
-        handleDelete={this.handleDelete}
+        toggleMarked={this.toggleMarked}
         addItem={this.addItem}
         addItemAsync={this.addItemAsync}
       />

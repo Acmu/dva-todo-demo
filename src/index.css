@@ -7,6 +7,6 @@ html, body {
   padding: 0;
 }
 
-:global(#root) {
+/* :global(#root) {
   overflow: hidden;
-}
+} */
