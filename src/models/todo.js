@@ -11,43 +11,17 @@ export default {
   },
 
   reducers: {
-    setTodoList({ todoList, searchVal }, { inputValue }) {
-      const obj = {
-        text: inputValue,
-        marked: false,
-        uuid: uuidv4(),
-        searched: inputValue.indexOf(searchVal) !== -1
-      };
+    setTodoList(store, { obj }) {
       return {
-        todoList: [obj, ...todoList],
-        searchVal
+        ...store,
+        todoList: [obj, ...store.todoList]
       };
     },
 
-    setToggleMarked({ todoList, searchVal }, { uuid }) {
-      const newArr = [];
-      let lastObj = null;
-      const getComputedObj = item => getPureObj(item, { marked: !item.marked });
-
-      todoList.forEach(listItem => {
-        if (uuid === listItem.uuid) {
-          if (!listItem.marked) {
-            lastObj = getComputedObj(listItem);
-          } else {
-            newArr.unshift(getComputedObj(listItem));
-          }
-        } else {
-          newArr.push(listItem);
-        }
-      });
-
-      if (lastObj) {
-        newArr.push(lastObj);
-      }
-
+    setToggleMarked(store, { todoList }) {
       return {
-        todoList: newArr,
-        searchVal
+        ...store,
+        todoList
       };
     },
 
@@ -71,21 +45,48 @@ export default {
   },
 
   effects: {
-    *addEffect({ inputValue }, { call, put, select }) {
-      const delay = ms =>
-        new Promise(resolve => {
-          setTimeout(resolve, ms);
-        });
-      // call的函数要返回promise
-      yield call(delay, 1000);
-      // 这里可以获取到store中的数据
-      // yield select(store => {
-      //   console.log(store.todo, 'select data')
-      // })
-      yield put({
-        type: 'add',
-        inputValue
+    *addTodoListItem({ inputValue }, { put, select }) {
+      const obj = yield select(({ todo }) => {
+        return {
+          text: inputValue,
+          marked: false,
+          uuid: uuidv4(),
+          searched:
+            todo.searchVal.length || inputValue.indexOf(todo.searchVal) !== -1
+        };
       });
+      yield put({
+        type: 'setTodoList',
+        obj
+      });
+    },
+
+    *toggleMarked({ uuid }, { put, select }) {
+      const todoList = yield select(({ todo: { todoList } }) => {
+        const newArr = [];
+        let lastObj = null;
+        const getComputedObj = item =>
+          getPureObj(item, { marked: !item.marked });
+        todoList.forEach(listItem => {
+          if (uuid === listItem.uuid) {
+            if (!listItem.marked) {
+              lastObj = getComputedObj(listItem);
+            } else {
+              newArr.unshift(getComputedObj(listItem));
+            }
+          } else {
+            newArr.push(listItem);
+          }
+        });
+        if (lastObj) {
+          newArr.push(lastObj);
+        }
+        return newArr;
+      });
+      yield put({
+        type: 'setToggleMarked',
+        todoList
+      })
     }
   }
 };

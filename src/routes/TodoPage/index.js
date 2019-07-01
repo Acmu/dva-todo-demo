@@ -7,7 +7,7 @@ class TodoPage extends Component {
   addItem = inputValue => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'todo/setTodoList',
+      type: 'todo/addTodoListItem',
       inputValue
     });
   };
@@ -20,19 +20,10 @@ class TodoPage extends Component {
     });
   };
 
-  // addItemAsync = () => {
-  //   const { inputValue } = this.state;
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'todo/addEffect',
-  //     inputValue
-  //   });
-  // };
-
   toggleMarked = uuid => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'todo/setToggleMarked',
+      type: 'todo/toggleMarked',
       uuid
     });
   };
@@ -63,7 +54,6 @@ class TodoPage extends Component {
         todoList={todoList}
         toggleMarked={this.toggleMarked}
         addItem={this.addItem}
-        addItemAsync={this.addItemAsync}
       />
     );
   }
