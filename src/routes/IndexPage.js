@@ -1,32 +1,39 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './IndexPage.css';
+import { routerRedux, withRouter } from 'dva/router';
+
+const routeMap = [
+  {
+    title: 'todo list',
+    path: 'todo'
+  }
+];
 
 function IndexPage(props) {
-  const { history } = props;
+  const { dispatch } = props;
   return (
-    <div className={styles.normal}>
-      <h1 className={styles.title}>Yay! Welcome to dva!</h1>
-      <div className={styles.welcome} />
-      <ul className={styles.list}>
-        <li>
-          To get started, edit <code>src/index.js</code> and save to reload.
-        </li>
-        <li>
-          <a href='https://github.com/dvajs/dva-docs/blob/master/v1/en-us/getting-started.md'>
-            Getting Started
-          </a>
-        </li>
-        <li>
-          <button onClick={() => history.push('/todo')}>
-            Go to todo list :)
-          </button>
-        </li>
+    <div>
+      <ul>
+        {routeMap.map(item => {
+          return (
+            <li key={item.path}>
+              <button
+                onClick={() => {
+                  dispatch(
+                    routerRedux.push({
+                      pathname: item.path
+                    })
+                  );
+                }}
+              >
+                {item.title}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
 
-IndexPage.propTypes = {};
-
-export default connect()(IndexPage);
+export default withRouter(connect()(IndexPage));
